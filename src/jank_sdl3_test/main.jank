@@ -67,6 +67,19 @@ static SDL_FRect mouseRect;
 SDL_FRect* getMouseRectPtr(){
     return &mouseRect;
 }
+    
+static void setColor(int r, int g, int b, int a){
+    SDL_SetRenderDrawColor(renderer, (Uint8)r, (Uint8)g, (Uint8)b, (Uint8)a);
+}
+    
+static void setColor(int r, int g, int b){
+    SDL_SetRenderDrawColor(renderer, (Uint8)r, (Uint8)g, (Uint8)b, 255);
+}
+
+static void drawRectAtMouse(){
+    // draw mouse rectangle
+    SDL_RenderFillRect(renderer, &mouseRect);
+}
 
 static void Start() {
     SDL_Event event;
@@ -103,7 +116,7 @@ static void Start() {
 
         // clear the window to red fade color
         SDL_RenderClear(renderer);
-
+                
         call_frame_callback();
 
         // set draw color to white
@@ -138,10 +151,10 @@ void start() {
       (reset! is_firsttime false)))
   
   ;; ; set draw color to white
-  ;; (cpp/SDL_SetRenderDrawColor cpp/renderer 255 255 255 255)
+  ;(cpp/setColor 255 255 255)
 
   ;; ; draw mouse rectangle
-  ;; (cpp/SDL_RenderFillRect cpp/renderer (cpp/getMouseRectPtr))
+  ;(cpp/drawRectAtMouse)
   )
 
 (defn -main [& args]
