@@ -6,7 +6,7 @@
   :middleware [leiningen.jank/middleware]
   :jank {:include-dirs ["include"]
          :library-dirs ["lib"]
-         :linked-libraries []}
+         :linked-libraries ["SDL3"]}
   :main jank-sdl3-test.main
   :profiles {:base {:jank {:output-dir "target/debug"
                            :optimization-level 0}}
