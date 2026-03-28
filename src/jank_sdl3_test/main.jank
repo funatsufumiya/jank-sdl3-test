@@ -1,0 +1,4 @@
+(ns jank-sdl3-test.main)
+
+(defn -main [& args]
+  (println "Hello, world!"))
