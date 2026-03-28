@@ -148,12 +148,8 @@ void start() {
   (if @is_firsttime
     (do
       (println "first frame from jank!")
-      (reset! is_firsttime false)))
-  
-  ;; ; set draw color to white
-  ;(cpp/setColor 255 255 255)
-
-  ;; ; draw mouse rectangle
+      (reset! is_firsttime false))) 
+  ;(cpp/setColor 255 255 0)
   ;(cpp/drawRectAtMouse)
   )
 
