@@ -5,9 +5,19 @@
 #include <string>
 #include <iostream>
 #include <SDL3/SDL.h>
+          
+static jank::runtime::oref<jank::runtime::object> frame_callback;
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
+
+void set_frame_callback(jank::runtime::oref<jank::runtime::object> obj){
+    frame_callback = obj;
+}
+          
+void call_frame_callback(){
+  dynamic_call(frame_callback);
+}
 
 static int Init() {
     int ret = SDL_Init(SDL_INIT_VIDEO);
@@ -86,6 +96,8 @@ static void Start() {
 
         // draw everything to screen
         SDL_RenderPresent(renderer);
+
+        call_frame_callback();
     }
 }
 
@@ -98,5 +110,14 @@ void start() {
 }
 ")
 
+(def is_firsttime (atom true))
+
+(defn frame []
+  (if @is_firsttime
+    (do 
+      (println "first frame from jank!")
+      (reset! is_firsttime false))))
+
 (defn -main [& args]
+  (cpp/set_frame_callback frame)
   (cpp/start))
