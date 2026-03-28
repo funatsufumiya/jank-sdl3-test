@@ -7,12 +7,21 @@
 #include <SDL3/SDL.h>
           
 static jank::runtime::oref<jank::runtime::object> frame_callback;
+static jank::runtime::oref<jank::runtime::object> init_callback;
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
 
+void set_init_callback(jank::runtime::oref<jank::runtime::object> obj){
+    init_callback = obj;
+}
+
 void set_frame_callback(jank::runtime::oref<jank::runtime::object> obj){
     frame_callback = obj;
+}
+
+void call_init_callback(){
+  dynamic_call(init_callback);
 }
           
 void call_frame_callback(){
@@ -41,6 +50,8 @@ static int Init() {
 
     std::string renderer_name = SDL_GetRendererName(renderer);
     std::cout << \"Renderer: \" << renderer_name << std::endl;
+
+    call_init_callback();
 
     return 0;
 }
@@ -112,6 +123,9 @@ void start() {
 
 (def is_firsttime (atom true))
 
+(defn init []
+  (println "init from jank!"))
+
 (defn frame []
   (if @is_firsttime
     (do 
@@ -119,5 +133,6 @@ void start() {
       (reset! is_firsttime false))))
 
 (defn -main [& args]
+  (cpp/set_init_callback init)
   (cpp/set_frame_callback frame)
   (cpp/start))
