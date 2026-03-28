@@ -2,6 +2,8 @@
 
 (cpp/raw "
 
+#include <string>
+#include <iostream>
 #include <SDL3/SDL.h>
 
 static SDL_Window *window = NULL;
@@ -21,10 +23,14 @@ static int Init() {
     }
 
     renderer = SDL_CreateRenderer(window, NULL);
+
     if (!renderer) {
         SDL_Log(\"SDL_CreateRenderer() Error: \", SDL_GetError());
         return -1;
     }
+
+    std::string renderer_name = SDL_GetRendererName(renderer);
+    std::cout << \"Renderer: \" << renderer_name << std::endl;
 
     return 0;
 }
