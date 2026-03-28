@@ -6,11 +6,11 @@
 #include <iostream>
 #include <SDL3/SDL.h>
           
-static jank::runtime::oref<jank::runtime::object> frame_callback;
-static jank::runtime::oref<jank::runtime::object> init_callback;
+jank::runtime::oref<jank::runtime::object> frame_callback;
+jank::runtime::oref<jank::runtime::object> init_callback;
 
-static SDL_Window *window = NULL;
-static SDL_Renderer *renderer = NULL;
+SDL_Window *window = NULL;
+SDL_Renderer *renderer = NULL;
 
 void set_init_callback(jank::runtime::oref<jank::runtime::object> obj){
     init_callback = obj;
@@ -28,7 +28,7 @@ void call_frame_callback(){
   dynamic_call(frame_callback);
 }
 
-static int Init() {
+int Init() {
     int ret = SDL_Init(SDL_INIT_VIDEO);
     if (ret < 0) {
         SDL_Log(\"SDL_Init() Error: %s\", SDL_GetError());
@@ -56,32 +56,40 @@ static int Init() {
     return 0;
 }
 
-static void Term() {
+void Term() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 }
 
-static SDL_FRect mouseRect;
+SDL_FRect mouseRect;
 
 SDL_FRect* getMouseRectPtr(){
     return &mouseRect;
 }
     
-static void setColor(int r, int g, int b, int a){
+void setColor(int r, int g, int b, int a){
     SDL_SetRenderDrawColor(renderer, (Uint8)r, (Uint8)g, (Uint8)b, (Uint8)a);
 }
     
-static void setColor(int r, int g, int b){
+void setColor(int r, int g, int b){
     SDL_SetRenderDrawColor(renderer, (Uint8)r, (Uint8)g, (Uint8)b, 255);
 }
 
-static void drawRectAtMouse(){
+void drawRectAtMouse(){
     // draw mouse rectangle
     SDL_RenderFillRect(renderer, &mouseRect);
 }
 
-static void Start() {
+void renderClear(){
+    SDL_RenderClear(renderer);
+}
+
+void renderPresent(){
+    SDL_RenderPresent(renderer);
+}
+
+void Start() {
     SDL_Event event;
     bool running = true;
 
@@ -116,7 +124,7 @@ static void Start() {
 
         // clear the window to red fade color
         SDL_RenderClear(renderer);
-                
+        
         call_frame_callback();
 
         // set draw color to white
@@ -149,8 +157,10 @@ void start() {
     (do
       (println "first frame from jank!")
       (reset! is_firsttime false))) 
-  ;(cpp/setColor 255 255 0)
-  ;(cpp/drawRectAtMouse)
+  ;; (cpp/renderClear)
+  ;; (cpp/setColor 255 255 0)
+  ;; (cpp/drawRectAtMouse)
+  ;; (cpp/renderPresent)
   )
 
 (defn -main [& args]
