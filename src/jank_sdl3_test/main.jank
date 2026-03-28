@@ -48,8 +48,8 @@ int Init() {
         return -1;
     }
 
-    std::string renderer_name = SDL_GetRendererName(renderer);
-    std::cout << \"Renderer: \" << renderer_name << std::endl;
+    // std::string renderer_name = SDL_GetRendererName(renderer);
+    // std::cout << \"Renderer: \" << renderer_name << std::endl;
 
     call_init_callback();
 
@@ -125,6 +125,9 @@ void start() {
 (def is_firsttime (atom true))
 
 (defn init []
+  (let [renderer_name (cpp/SDL_GetRendererName cpp/renderer)]
+    (println "Renderer:" renderer_name))
+  
   (println "init from jank!"))
 
 (defn frame []
